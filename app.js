@@ -1,6 +1,8 @@
-var inquirer = require('inquirer');
-
-
+const inquirer = require('inquirer');
+const chalkPipe = require('chalk-pipe');
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 
 const employeeName = {
     type: "input",
@@ -20,16 +22,16 @@ const employeeEmail = {
 const addAnother = {
     type: "confirm",
     name: "addAnother",
-    message: "Add another employee?",
-
+    message: "Add another team member?",
 }
 
 const manager = [];
 const employeeArray = [];
 
 async function setManager() {
-    console.log("Enter employee information for project manager.")
-    const mArray = [];
+    console.log(chalkPipe('red.bold')('Enter employee information for project manager.'));
+    // console.log("Enter employee information for project manager.")
+    // const mArray = [];
     let response = await inquirer
         .prompt([
             employeeName,
@@ -41,14 +43,17 @@ async function setManager() {
                 message: "Office Number: "
             }
         ]);
-    mArray.push(response);
-    return mArray;
+    let { name, id, email, officeNumber } = response;
+    let manager = new Manager(name, id, email, officeNumber);
+    // mArray.push(manager);
+    return manager;
 };
 
 async function buildTeamArray() {
     let cont = true;
     const eArray = [];
     while (cont) {
+        console.log(chalkPipe('red.bold')('Add a team member.'));
         let response = await inquirer
             .prompt([
                 employeeName,
@@ -57,6 +62,7 @@ async function buildTeamArray() {
                 {
                     type: "list",
                     name: "type",
+                    message: "Engineer or Intern",
                     choices: ["Engineer", "Intern"],
                     filter: function(val) {
                         return val.toLowerCase();
@@ -81,29 +87,26 @@ async function buildTeamArray() {
                 addAnother
             ]);
         let { name, id, email, type, githubSchool } = response;
-        let employee = {
-            name: name,
-            id: id,
-            email: email,
-            type: type,
-            githubSchool: githubSchool
+        let teamMember;
+        if (type === 'engineer') {
+            teamMember = new Engineer(name, id, email, githubSchool);
+        } else {
+            teamMember = new Intern(name, id, email, githubSchool);
         }
-        eArray.push(employee);
+        eArray.push(teamMember);
         cont = response.addAnother;
     }
     return eArray;
 };
 
-function likesFood(aFood) {
-    return function(answers) {
-        return answers[aFood];
-    };
-}
-
-
 setManager().then(res => {
-    console.log(res);
+    const teamArray = [];
+    // const manager = res;
+    // console.log(res);
+    teamArray.push(res);
     buildTeamArray().then(res => {
-        console.log(res);
+        // console.log(res);
+        teamArray.push(res);
+        console.log(teamArray);
     });
 });

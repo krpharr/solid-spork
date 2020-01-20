@@ -21,6 +21,7 @@
     },
     "homepage": "https://github.com/krpharr/solid-spork#readme",
     "dependencies": {
+        "chalk-pipe": "^3.0.0",
         "inquirer": "^6.3.1"
     },
     "devDependencies": {
