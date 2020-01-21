@@ -22,7 +22,10 @@
     "homepage": "https://github.com/krpharr/solid-spork#readme",
     "dependencies": {
         "chalk-pipe": "^3.0.0",
-        "inquirer": "^6.3.1"
+        "fs": "0.0.1-security",
+        "inquirer": "^6.3.1",
+        "materialize-css": "^1.0.0-rc.2",
+        "util": "^0.12.1"
     },
     "devDependencies": {
         "jest": "^24.8.0"
