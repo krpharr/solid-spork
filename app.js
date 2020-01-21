@@ -35,8 +35,6 @@ const employeeArray = [];
 
 async function setManager() {
     console.log(chalkPipe('red.bold')('Enter employee information for project manager.'));
-    // console.log("Enter employee information for project manager.")
-    // const mArray = [];
     let response = await inquirer
         .prompt([
             employeeName,
@@ -50,7 +48,6 @@ async function setManager() {
         ]);
     let { name, id, email, officeNumber } = response;
     let manager = new Manager(name, id, email, officeNumber);
-    // mArray.push(manager);
     return manager;
 };
 
@@ -110,7 +107,6 @@ async function loadTemplates() {
         readFileAysnc("templates/engineer.html", "utf8"),
         readFileAysnc("templates/intern.html", "utf8")
     ]);
-
     let buffObj = {
         main: main,
         manager: manager,
@@ -120,52 +116,17 @@ async function loadTemplates() {
     return buffObj;
 };
 
-loadTemplates().then(res => {
-    console.log(res);
-    // let { main, manager, engineer, intern } = res;
-    // let tOBJ = {
-    //     main: main,
-    //     manager: manager,
-    //     engineer: engineer,
-    //     inter: intern
-    // };
-    const myManager = new Manager("Randall", 12, "ranpharr@verizon.net", 1412);
-    console.log(myManager);
-    let buildhtml = new BuildHtml(myManager, [1, 2, 3, 4], res);
-
-    console.log(buildhtml.output);
-
-    fs.writeFile("output/team.html", buildhtml.output, function(err) {
-        if (err) {
-            console.log(err);
-        }
+setManager().then(res => {
+    const manager = res;
+    buildTeamArray().then(res => {
+        const teamArray = res.slice(0);
+        loadTemplates().then(res => {
+            let buildhtml = new BuildHtml(manager, teamArray, res);
+            fs.writeFile("output/team.html", buildhtml.output, function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        });
     });
 });
-
-
-// const myManager = new Manager("Randall", 12, "ranpharr@verizon.net", 1412);
-// console.log(myManager);
-// let buildhtml = new BuildHtml(myManager, [1, 2, 3, 4], templateOBJ);
-
-// console.log(buildhtml.output);
-
-// let interval = setInterval(function() {
-//     if (buildhtml.loaded) {
-//         let output = buildhtml.getOutput();
-//         console.log(output);
-//         clearInterval(interval);
-//         // write output to file
-//     }
-// }, 10);
-
-/////////////////////////////////////////
-//
-/////////////////////////////////////////
-// setManager().then(res => {
-//     const teamArray = [];
-//     teamArray.push(res);
-//     buildTeamArray().then(res => {
-//         teamArray.push(res);
-//         console.log(teamArray);
-//     });
-// });
