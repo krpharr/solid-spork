@@ -1,7 +1,9 @@
-const inquirer = require('inquirer');
-const chalkPipe = require('chalk-pipe');
+const inquirer = require("inquirer");
+const chalkPipe = require("chalk-pipe");
 const util = require("util");
 const fs = require("fs");
+const validator = require("validator");
+const format = require("html-format");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
@@ -9,20 +11,38 @@ const BuildHtml = require("./lib/BuildHtml");
 
 const readFileAysnc = util.promisify(fs.readFile);
 
+const idArray = [];
+
 const employeeName = {
     type: "input",
     name: "name",
-    message: "Name: "
+    message: "Name: ",
+    validate: function(value) {
+        if (validator.isEmpty(value)) return "Name can not be empty.";
+        return true;
+    }
 }
 const employeeID = {
     type: "input",
     name: "id",
-    message: "Employee ID:"
+    message: "Employee ID:",
+    validate: function(value) {
+        if (validator.isEmpty(value)) return "ID can not be empty.";
+        if (idArray.includes(value)) return "ID Taken. Choose unique id for employee.";
+        idArray.push(value);
+        return true;
+    }
 }
 const employeeEmail = {
     type: "input",
     name: "email",
-    message: "Email address:"
+    message: "Email address:",
+    validate: function(value) {
+        if (validator.isEmpty(value)) return "Email can not be empty.";
+        let pass = validator.isEmail(value);
+        if (pass) return pass;
+        return "Enter a valid email addess."
+    }
 }
 const addAnother = {
     type: "confirm",
@@ -43,7 +63,11 @@ async function setManager() {
             {
                 type: "input",
                 name: "officeNumber",
-                message: "Office Number: "
+                message: "Office Number: ",
+                validate: function(value) {
+                    if (validator.isEmpty(value)) return "Offide number can not be empty.";
+                    return true;
+                }
             }
         ]);
     let { name, id, email, officeNumber } = response;
@@ -76,14 +100,22 @@ async function buildTeamArray() {
                     message: "Github name: ",
                     when: function(answers) {
                         return answers.type === "engineer";
+                    },
+                    validate: function(value) {
+                        if (validator.isEmpty(value)) return "Github name can not be empty.";
+                        return true;
                     }
                 },
                 {
                     type: "input",
                     name: "githubSchool",
-                    message: "Name of college: ",
+                    message: "Name of school: ",
                     when: function(answers) {
                         return answers.type === "intern";
+                    },
+                    validate: function(value) {
+                        if (validator.isEmpty(value)) return "School name can not be empty.";
+                        return true;
                     }
                 },
                 addAnother
@@ -122,7 +154,7 @@ setManager().then(res => {
         const teamArray = res.slice(0);
         loadTemplates().then(res => {
             let buildhtml = new BuildHtml(manager, teamArray, res);
-            fs.writeFile("output/team.html", buildhtml.output, function(err) {
+            fs.writeFile("output/team.html", format(buildhtml.output), function(err) {
                 if (err) {
                     console.log(err);
                 }
