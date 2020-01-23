@@ -28,6 +28,7 @@ const employeeID = {
     message: "Employee ID:",
     validate: function(value) {
         if (validator.isEmpty(value)) return "ID can not be empty.";
+        if (value.toString().length < 2 || value.toString().length > 6) return "ID must be 2 to six characters."
         if (idArray.includes(value)) return "ID Taken. Choose unique id for employee.";
         idArray.push(value);
         return true;
