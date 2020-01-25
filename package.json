@@ -25,7 +25,6 @@
         "fs": "0.0.1-security",
         "html-format": "^1.0.1",
         "inquirer": "^6.3.1",
-        "materialize-css": "^1.0.0-rc.2",
         "util": "^0.12.1",
         "validator": "^12.1.0"
     },
