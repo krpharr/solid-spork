@@ -21,3 +21,9 @@
 .cardIcon {
     margin-right: 8px;
 }
+
+.member-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}

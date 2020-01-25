@@ -13,6 +13,7 @@ const readFileAysnc = util.promisify(fs.readFile);
 
 const idArray = [];
 
+//reusable prompt objects for inquirer
 const employeeName = {
     type: "input",
     name: "name",
@@ -28,7 +29,7 @@ const employeeID = {
     message: "Employee ID:",
     validate: function(value) {
         if (validator.isEmpty(value)) return "ID can not be empty.";
-        if (value.toString().length < 2 || value.toString().length > 6) return "ID must be 2 to six characters."
+        if (value.toString().length < 2 || value.toString().length > 6) return "ID must be 2 to 6 characters."
         if (idArray.includes(value)) return "ID Taken. Choose unique id for employee.";
         idArray.push(value);
         return true;
@@ -51,8 +52,8 @@ const addAnother = {
     message: "Add another team member?",
 }
 
-const manager = [];
-const employeeArray = [];
+// const manager = [];
+// const employeeArray = [];
 
 async function setManager() {
     console.log(chalkPipe('red.bold')('Enter employee information for project manager.'));
@@ -134,6 +135,8 @@ async function buildTeamArray() {
     return eArray;
 };
 
+// load all html templates 
+
 async function loadTemplates() {
     let [main, manager, engineer, intern] = await Promise.all([readFileAysnc("templates/main.html", "utf8"),
         readFileAysnc("templates/manager.html", "utf8"),
@@ -148,6 +151,8 @@ async function loadTemplates() {
     }
     return buffObj;
 };
+
+// main function
 
 setManager().then(res => {
     const manager = res;
