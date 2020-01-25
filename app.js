@@ -163,6 +163,9 @@ setManager().then(res => {
             fs.writeFile("output/team.html", format(buildhtml.output), function(err) {
                 if (err) {
                     console.log(err);
+                } else {
+                    console.log(__dirname + "/output/team.html");
+                    console.log("written to disk.");
                 }
             });
         });
